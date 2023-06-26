@@ -1,6 +1,3 @@
-#TODO
-#Possibly date
-
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -8,6 +5,9 @@ import os
 import random
 from dotenv import load_dotenv
 from mysql.connector import connect, Error
+
+#TODO
+#Possibly date
 
 #Load secrets in .env (you need to make one)
 load_dotenv()
@@ -32,7 +32,7 @@ try:
         host="localhost",
         user=SQL_USERNAME,
         password=SQL_PASSWORD,
-        database=DATABASE,
+        database=SQL_DATABASE,
     )
 except Error as e:
     print(e)
@@ -43,7 +43,7 @@ async def on_ready():
     await tree.sync()
     print("Bot started")
 
-#It's the 21st century, we use slash commands
+#It's the 21st century baby, we use slash commands now
 
 #This one adds a quote with an author to the database
 @tree.command(name="addquote", description="Adds a quote to the database so it can be displayed on the website")
