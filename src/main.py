@@ -22,7 +22,7 @@ DATABASE = os.getenv("DATABASE")
 
 #Bot setup
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix='$', intents=intents)
+bot = commands.Bot(command_prefix=PREFIX, intents=intents)
 
 #Connecting to database
 try:
@@ -70,10 +70,12 @@ async def addquote(ctx):
 async def pick_random(ctx):
     with connection.cursor() as cursor:
         cursor.execute("SELECT quote, author FROM quotes")
-        result = cursor.fetchall()
-        print(result)
-        print(type(result))
-        # await ctx.send(random.choice(result)[0] +  " - " )
+        result = random.choice(cursor.fetchall())
+
+        quote = result[0]
+        author = result[1]
+        
+        await ctx.send(quote + f" - {author}")
     
 bot.run(TOKEN)
 
