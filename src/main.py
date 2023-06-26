@@ -10,7 +10,7 @@ import re
 #TODO
 #Possibly date
 
-#Load secrets in .env (you need to make one)
+#Load secrets in .env (you need to make one first)
 load_dotenv()
 
 PREFIX = os.getenv("PREFIX")
