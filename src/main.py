@@ -48,9 +48,9 @@ async def on_ready():
 
 #This one adds a quote with an author to the database
 @tree.command(name="addquote", description="Adds a quote to the database so it can be displayed on the website")
-async def add_quote(interaction, author: str, raw_quote: str):
+async def add_quote(interaction, author: str, quote: str):
     #Way overkill to fix ' breaking stuff
-    quote = re.sub("'", "", raw_quote)
+    fixed_quote = re.sub("'", "", quote)
 
     #32 is max discord username character limit
     if len(author) > 32:
@@ -58,17 +58,17 @@ async def add_quote(interaction, author: str, raw_quote: str):
         return
 
     #Make sure people don't overflow anything
-    if len(quote) > MAX_QUOTE_LENGTH:
+    if len(fixed_quote) > MAX_QUOTE_LENGTH:
         await interaction.response.send_message("Long quote dumbass")
         return
 
     #The SQL, ew
-    insert_query = f"INSERT INTO {SQL_TABLE} (quote, author) VALUES ('{quote}', '{author}')"
+    insert_query = f"INSERT INTO {SQL_TABLE} (quote, author) VALUES ('{fixed_quote}', '{author}')"
     with connection.cursor() as cursor:
         cursor.execute(insert_query)
         connection.commit()
 
-    await interaction.response.send_message(f"Quote succesfully saved: ```{quote} - {author}```")
+    await interaction.response.send_message(f"Quote succesfully saved: ```{fixed_quote} - {author}```")
 
 #Pick a random quote and send it in chat
 #Potentially expand to being able to pick quotes
