@@ -1,8 +1,9 @@
 How to use:
 1. Create a bot through discord developer portal
-2. Invite bot to server
-3. `git clone https://github.com/DvorakDwarf/quotebot.git`
-4. Create a `.env` file inside of `src`and fill in all variables used inside `main.py`. Here is a template
+2. Give the bot priveleged intents in the portal
+3. Invite bot to server
+4. `git clone https://github.com/DvorakDwarf/quotebot.git`
+5. Create a `.env` file inside of `src`and fill in all variables used inside `main.py`. Here is a template
 ```
 TOKEN = ""
 
