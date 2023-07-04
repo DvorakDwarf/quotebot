@@ -20,24 +20,29 @@ SQL_USERNAME = os.getenv("SQL_USERNAME")
 SQL_PASSWORD = os.getenv("SQL_PASSWORD")
 SQL_DATABASE = os.getenv("SQL_DATABASE")
 SQL_TABLE = os.getenv("SQL_TABLE")
+SQL_HOST = os.getenv("SQL_HOST")
 
 #Bot setup
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
-#Connecting to database
-#Arguably the bot should exit if this fails
-try:
-    connection = connect(
-        host="localhost",
-        user=SQL_USERNAME,
-        password=SQL_PASSWORD,
-        database=SQL_DATABASE,
-    )
-except Error as e:
-    print(e)
-    os._exit(os.EX_UNAVAILABLE)
+
+def connect_sql():
+    #Connecting to database
+    #Arguably the bot should exit if this fails
+    try:
+        cnx = connect(
+            host=SQL_HOST,
+            user=SQL_USERNAME,
+            password=SQL_PASSWORD,
+            database=SQL_DATABASE,
+        )
+    except Error as e:
+        print(e)
+        # os._exit(os.EX_UNAVAILABLE)
+
+    return cnx
 
 @client.event
 async def on_ready():
@@ -64,25 +69,33 @@ async def add_quote(interaction, author: str, quote: str):
 
     #The SQL, ew
     insert_query = f"INSERT INTO {SQL_TABLE} (quote, author) VALUES ('{fixed_quote}', '{author}')"
+
+    #This should fix disconnection after 10min
+    connection = connect_sql()
     with connection.cursor() as cursor:
         cursor.execute(insert_query)
         connection.commit()
 
+    connection.close()
+    
     await interaction.response.send_message(f"Quote succesfully saved: ```{fixed_quote} - {author}```")
 
 #Pick a random quote and send it in chat
 #Potentially expand to being able to pick quotes
 @tree.command(name="randomquote", description="Sends a random server quote")
 async def pick_random(interaction):
+    connection = connect_sql()
     with connection.cursor() as cursor:
         cursor.execute(f"SELECT quote, author FROM {SQL_TABLE}")
         result = random.choice(cursor.fetchall())
 
         quote = result[0]
         author = result[1]
+    
+    connection.close()
 
-        #Change up formatting if you like
-        await interaction.response.send_message("```" + quote + f" - {author}```")
+    #Change up formatting if you like
+    await interaction.response.send_message("```" + quote + f" - {author}```")
     
 client.run(TOKEN)
 

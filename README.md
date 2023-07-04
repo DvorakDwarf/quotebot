@@ -5,6 +5,7 @@ How to use:
 4. `git clone https://github.com/DvorakDwarf/quotebot.git`
 5. Create a `.env` file inside of `src`and fill in all variables used inside `main.py`. Here is a template
 ```
+#Copy the bot's token from the developer portal
 TOKEN = ""
 
 #Not needed anymore, can ignore this one
@@ -15,6 +16,7 @@ SQL_USERNAME = ""
 SQL_PASSWORD = ""
 SQL_DATABASE = "quotes_db"
 SQL_TABLE = "quotes"
+SQL_HOST = "localhost"
 ```
 5. Install all packages with `python -m pip install -r requirements.txt`
 6. Run the bot with `python main.py`
